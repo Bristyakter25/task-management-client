@@ -9,7 +9,7 @@ const Dashboard = () => {
           <NavLink to='/dashboard/addTask'>
             <li className='btn'>Add Task</li>
           </NavLink>
-          <li className='btn'>My Task</li>
+          <NavLink to='/dashboard/myTasks'><li className='btn'>My Task</li></NavLink>
         </ul>
       </div>
       <Outlet /> 

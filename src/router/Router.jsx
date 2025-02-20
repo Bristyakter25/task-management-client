@@ -5,6 +5,8 @@ import Login from "../components/authentication/Login";
 import Register from "../components/authentication/Register";
 import Dashboard from "../components/dashboard/Dashboard";
 import AddTask from "../components/taskCategory/AddTask";
+import MyTask from "../components/taskCategory/MyTask";
+import UpdateTask from "../components/taskCategory/UpdateTask";
 
 export const router = createBrowserRouter([
     {
@@ -27,7 +29,15 @@ export const router = createBrowserRouter([
             {
               path:'addTask',
               element:<AddTask></AddTask>
-            }
+            },
+            {
+              path:'myTasks',
+              element:<MyTask></MyTask>
+            },
+            {
+              path:'updateTask/:id',
+              element:<UpdateTask></UpdateTask>
+            },
           ]
         }
       ]
