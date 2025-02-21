@@ -80,7 +80,7 @@ const AddTask = () => {
           </select>
         </div>
         <div className="form-control mt-6 w-full">
-          <button className="btn btn-primary w-full">Add Task</button>
+          <button className="btn bg-teal-300 w-full">Add Task</button>
         </div>
       </form>
     </div>

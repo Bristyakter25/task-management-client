@@ -7,6 +7,7 @@ import Dashboard from "../components/dashboard/Dashboard";
 import AddTask from "../components/taskCategory/AddTask";
 import MyTask from "../components/taskCategory/MyTask";
 import UpdateTask from "../components/taskCategory/UpdateTask";
+import Home from "../components/home/Home";
 
 export const router = createBrowserRouter([
     {
@@ -14,6 +15,11 @@ export const router = createBrowserRouter([
       element: <MainLayout></MainLayout>,
       errorElement:<ErrorPage></ErrorPage>,
       children:[
+        {
+          path:'/',
+          element:<Home></Home>
+
+        },
         {
             path:'login',
             element:<Login></Login>
