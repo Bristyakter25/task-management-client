@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const UpdateTask = () => {
   const { id } = useParams(); // Get task ID from URL
@@ -32,7 +33,13 @@ const UpdateTask = () => {
     })
       .then((res) => res.json())
       .then(() => {
-        alert("Task Updated Successfully!");
+         Swal.fire({
+                  position: "top-end",
+                  icon: "success",
+                  title: "Your work has been updated",
+                  showConfirmButton: false,
+                  timer: 1500
+                });
         navigate("/dashboard/myTasks"); // Redirect after update
       })
       .catch((err) => console.error("Error updating task:", err));

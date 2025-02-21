@@ -30,8 +30,25 @@ const MyTask = () => {
 
       if (response.ok) {
         console.log("Task deleted successfully:", taskId);
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success"
+            });
+          }
+        });
 
-        // Update the state without refetching the tasks
+        
         setTasks((prevTasks) =>
           prevTasks.filter((task) => task._id !== taskId)
         );
@@ -56,7 +73,7 @@ const MyTask = () => {
       : null;
 
     if (overCategory && tasks[activeIndex].category !== overCategory) {
-      // Move to a different category
+     
       const updatedTask = { ...tasks[activeIndex], category: overCategory };
       const updatedTasks = tasks.map((task) =>
         task._id === activeId ? updatedTask : task
@@ -65,7 +82,7 @@ const MyTask = () => {
       setTasks([...updatedTasks]);
 
       try {
-        // Remove the _id field before sending the update request
+       
         const { _id, ...taskWithoutId } = updatedTask;
         console.log("Updating task category:", taskWithoutId);
 
@@ -90,7 +107,7 @@ const MyTask = () => {
         console.error("Error updating task category:", error);
       }
     } else if (activeIndex !== -1 && overId) {
-      // Reorder within the same category
+     
       const overIndex = tasks.findIndex((task) => task._id === overId);
       if (activeIndex !== overIndex) {
         const newTasks = arrayMove([...tasks], activeIndex, overIndex);
@@ -98,7 +115,7 @@ const MyTask = () => {
         setTasks(newTasks);
 
         try {
-          // Ensure the IDs are included in the reordering request
+         
           console.log("Updating task order:", newTasks);
 
           const response = await fetch(`http://localhost:5000/tasks/reorder`, {
