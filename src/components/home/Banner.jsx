@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
-import img from '../../assets/20827912_Students or employees adding events or deadlines to calendar app.jpg';
+import img from '../../assets/765627_10-01.jpg';
 
 const Banner = () => {
     return (
         <div>
             <div
-                className="hero min-h-screen bg-cover bg-center"
+                className="hero min-h-screen bg-cover bg-center "
                 style={{
                     backgroundImage: `url(${img})`, // Use the imported image here
                 }}>

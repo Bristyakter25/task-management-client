@@ -3,19 +3,19 @@ import { useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const UpdateTask = () => {
-  const { id } = useParams(); // Get task ID from URL
+  const { id } = useParams(); 
   const navigate = useNavigate();
   const [task, setTask] = useState({ title: "", description: "", category: "" });
 
   // Fetch existing task data
   useEffect(() => {
-    fetch(`http://localhost:5000/tasks/${id}`)
+    fetch(`https://task-management-server-orcin-ten.vercel.app/tasks/${id}`)
       .then((res) => res.json())
       .then((data) => setTask(data))
       .catch((err) => console.error("Error fetching task:", err));
   }, [id]);
 
-  // Handle update submission
+  
   const handleUpdatedTask = async (e) => {
     e.preventDefault();
     const updatedTask = {
@@ -25,8 +25,8 @@ const UpdateTask = () => {
       timestamp: new Date().toISOString(),
     };
 
-    // Send update request to backend
-    fetch(`http://localhost:5000/tasks/${id}`, {
+    
+    fetch(`https://task-management-server-orcin-ten.vercel.app/tasks/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedTask),
@@ -40,7 +40,7 @@ const UpdateTask = () => {
                   showConfirmButton: false,
                   timer: 1500
                 });
-        navigate("/dashboard/myTasks"); // Redirect after update
+        navigate("/dashboard/myTasks"); 
       })
       .catch((err) => console.error("Error updating task:", err));
   };

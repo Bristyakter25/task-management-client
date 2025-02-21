@@ -1,64 +1,108 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Swal from "sweetalert2";
+import { AuthContext } from '../../provider/AuthProvider';
 import { DndContext, closestCenter } from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import SortableItem from "./SortableItem";
+import SortableItem from "./SortableItem"; // Make sure the path is correct
 
 const MyTask = () => {
+  const { user } = useContext(AuthContext); // Get user data from AuthContext
   const [tasks, setTasks] = useState([]);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5000/tasks")
+    console.log("Fetching tasks...");
+    fetch(`https://task-management-server-orcin-ten.vercel.app/tasks`)
       .then((response) => response.json())
       .then((data) => {
-        setTasks(data);
+        // Ensure the category exists in the data
+        const tasksWithCategory = data.map((task) => ({
+          ...task,
+          category: task.category || "To-Do", // Default to "To-Do" if no category
+        }));
+        setTasks(tasksWithCategory);
+        if (tasksWithCategory.length === 0) {
+          setMessage("No tasks available.");
+        } else {
+          setMessage("");
+        }
       })
       .catch((error) => console.error("Error fetching tasks:", error));
   }, []);
 
-  const handleDelete = async (taskId) => {
-    console.log("Deleting task with ID:", taskId);
+  const handleAddTask = async (title, description) => {
+    if (!user?.email) {
+      Swal.fire("Please log in to add a task.");
+      return;
+    }
+
+    const newTask = {
+      title,
+      description,
+      email: user.email, // Send user email
+    };
 
     try {
-      const response = await fetch(`http://localhost:5000/tasks/${taskId}`, {
-        method: "DELETE",
+      const response = await fetch("https://task-management-server-orcin-ten.vercel.app/tasks", {
+        method: "POST",
+        body: JSON.stringify(newTask),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
 
       if (response.ok) {
-        console.log("Task deleted successfully:", taskId);
-        Swal.fire({
-          title: "Are you sure?",
-          text: "You won't be able to revert this!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-          if (result.isConfirmed) {
-            Swal.fire({
-              title: "Deleted!",
-              text: "Your file has been deleted.",
-              icon: "success"
-            });
-          }
-        });
-
-        
-        setTasks((prevTasks) =>
-          prevTasks.filter((task) => task._id !== taskId)
-        );
+        const data = await response.json();
+        console.log("Task added successfully", data);
+        setTasks((prevTasks) => [...prevTasks, data]);
       } else {
-        console.error("Failed to delete task");
+        Swal.fire("Failed to add task.");
       }
     } catch (error) {
-      console.error("Error deleting task:", error);
+      console.error("Error adding task:", error);
+      Swal.fire("Error adding task.");
     }
   };
+
+  // const handleDelete = async (taskId) => {
+  //   console.log("Deleting task with ID:", taskId);
+
+  //   try {
+  //     const response = await fetch(`https://task-management-server-orcin-ten.vercel.app/tasks/${taskId}`, {
+  //       method: "DELETE",
+  //     });
+
+  //     if (response.ok) {
+  //       console.log("Task deleted successfully:", taskId);
+  //       Swal.fire({
+  //         title: "Are you sure?",
+  //         text: "You won't be able to revert this!",
+  //         icon: "warning",
+  //         showCancelButton: true,
+  //         confirmButtonColor: "#3085d6",
+  //         cancelButtonColor: "#d33",
+  //         confirmButtonText: "Yes, delete it!"
+  //       }).then((result) => {
+  //         if (result.isConfirmed) {
+  //           Swal.fire({
+  //             title: "Deleted!",
+  //             text: "Your task has been deleted.",
+  //             icon: "success"
+  //           });
+  //           setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
+  //         }
+  //       });
+  //     } else {
+  //       console.error("Failed to delete task");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error deleting task:", error);
+  //   }
+  // };
 
   const onDragEnd = async (event) => {
     const { active, over } = event;
@@ -73,21 +117,19 @@ const MyTask = () => {
       : null;
 
     if (overCategory && tasks[activeIndex].category !== overCategory) {
-     
       const updatedTask = { ...tasks[activeIndex], category: overCategory };
       const updatedTasks = tasks.map((task) =>
         task._id === activeId ? updatedTask : task
       );
 
-      setTasks([...updatedTasks]);
+      setTasks(updatedTasks);
 
       try {
-       
         const { _id, ...taskWithoutId } = updatedTask;
         console.log("Updating task category:", taskWithoutId);
 
         const response = await fetch(
-          `http://localhost:5000/tasks/${activeId}`,
+          `https://task-management-server-orcin-ten.vercel.app/tasks/${activeId}`,
           {
             method: "PUT",
             body: JSON.stringify(taskWithoutId),
@@ -99,15 +141,11 @@ const MyTask = () => {
 
         if (!response.ok) {
           console.error("Failed to update task category.");
-          console.log(
-            `PUT ${response.url} ${response.status} (${response.statusText})`
-          );
         }
       } catch (error) {
         console.error("Error updating task category:", error);
       }
     } else if (activeIndex !== -1 && overId) {
-     
       const overIndex = tasks.findIndex((task) => task._id === overId);
       if (activeIndex !== overIndex) {
         const newTasks = arrayMove([...tasks], activeIndex, overIndex);
@@ -115,10 +153,9 @@ const MyTask = () => {
         setTasks(newTasks);
 
         try {
-         
           console.log("Updating task order:", newTasks);
 
-          const response = await fetch(`http://localhost:5000/tasks/reorder`, {
+          const response = await fetch(`https://task-management-server-orcin-ten.vercel.app/tasks/reorder`, {
             method: "PUT",
             body: JSON.stringify(newTasks),
             headers: {
@@ -128,9 +165,6 @@ const MyTask = () => {
 
           if (!response.ok) {
             console.error("Failed to update task order.");
-            console.log(
-              `PUT ${response.url} ${response.status} (${response.statusText})`
-            );
           }
         } catch (error) {
           console.error("Error updating task order:", error);
@@ -149,6 +183,12 @@ const MyTask = () => {
     <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
       <div className="p-6">
         <h1 className="text-3xl font-bold text-center mb-6">My Tasks</h1>
+
+        {message && (
+          <div className="text-center text-gray-500 mb-6">
+            <p>{message}</p>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Object.keys(groupedTasks).map((category) => (
@@ -171,7 +211,7 @@ const MyTask = () => {
                         key={task._id}
                         id={task._id.toString()}
                         task={task}
-                        onDelete={handleDelete}
+                        setTasks={setTasks} 
                       />
                     ))
                   ) : (

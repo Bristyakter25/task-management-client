@@ -24,7 +24,7 @@ const Register = () => {
             const newUser = {name,email}
 
             // save user in database
-            fetch("http://localhost:5000/users",{
+            fetch("https://task-management-server-orcin-ten.vercel.app/users",{
                 method:'POST',
                 headers:{
                     'content-type': 'application/json'
@@ -46,7 +46,7 @@ const Register = () => {
     }
     return (
         <div>
-            <div className="hero bg-base-200 py-10">
+            <div className="hero bg-base-200 py-20">
   <div className="hero-content flex-col lg:flex-row-reverse">
     
     <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">

@@ -4,12 +4,15 @@ import { Outlet, useLocation } from 'react-router-dom';
 
 const MainLayout = () => {
     const location = useLocation();
-    const hideNavbarRoutes = ['/dashboard']; // Add routes here where you don't want to show the Navbar
-
+    const hideNavbarRoutes = ['/dashboard']; 
+    const isHome = location.pathname.startsWith("/");
     return (
-        <div className='lg:w-[1024px] w-[320px] mx-auto'>
+        <div className='w-full overflow-x-hidden mx-auto'>
             {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
+            <div className={`${isHome ? "w-full" : "lg:w-[1024px] w-[320px] mx-auto"}`}>
             <Outlet />
+            </div>
+           
         </div>
     );
 };
