@@ -1,7 +1,7 @@
 
-# 📝 Task Management Frontend  
+# 📝 Task Management Website
 
-## 🚀 Short Description  
+## 🚀 Description  
 A task management web application that helps users organize, track, and manage their tasks efficiently. The frontend is built using **React.js** and styled with **Tailwind CSS**, while **TanStack Query** handles server-state management, and **Firebase** is used for authentication.  
 
 ## 🔗 Live Links  
@@ -23,8 +23,8 @@ Ensure you have **Node.js** and **npm** (or **yarn**) installed on your system.
 ### Setup Instructions  
 1. Clone the repository:  
    ```bash
-   git clone <repository-url>
-   cd frontend
+   git clone https://github.com/Bristyakter25/task-management-client
+   cd task-management-client
    ```
 2. Install dependencies:  
    ```bash
@@ -34,7 +34,7 @@ Ensure you have **Node.js** and **npm** (or **yarn**) installed on your system.
    ```bash
    npm start
    ```
-4. Open your browser and go to `http://localhost:3000/`  
+4. Open your browser and go to `http://localhost:5173/`  
 
 ## 🛠 Technologies Used  
 
